@@ -1,8 +1,15 @@
+"""
+This gets only the current incarnation of the Doctor's dialogue and stores each word spoken as lowercase and separated
+by commas. This downloads the dialogue whenever there is a DOCTOR: in front of the lines that are being spoken. Each
+individual episode has its own dialogue, and then all of the dialogue spoken when the current doctor is DOCTOR: in the
+episode is added to a single doctor_x_dialogue.txt. This means that in episodes where three doctors are present, only
+the current incarncation of the doctor's dialogue is taken and accounted for.
+
+"""
 import os, re
-from pathlib import Path
 import numpy as np
 import pandas as pd
-
+from pathlib import Path
 
 # Label the different dialogue lines by who is speaking
 def get_names(df):
@@ -18,9 +25,14 @@ def get_names(df):
         if len(extra) >= 1:
             name = "EXTRANEOUS"
         elif len(name) > 0 and len(name[0]) > 1:
-            name = name[0]
+            name = name[0].strip()
+
+            # Used to check if missed a line, ie listen in DOCTOR: I\n listen. Assign such lines as nan.
+            if len(re.findall('[A-Z0-9]', name)) <= 1:
+                name = np.NaN
         else:
             name = np.NaN
+
         text_name += [name]
 
     return text_name
@@ -34,9 +46,15 @@ def clean_dialogue(df):
         if 'DOCTOR:' in line:
             line = line.replace('DOCTOR: ', '')
 
+        # Strip the leading and ending whitespaces.
+        line = line.strip()
         line = re.sub("([.]+)|([?]+)|([,]+)|([!]+)", "", line.lower())
-        line = re.sub("(\s)+", ", ", line)
-        line = re.sub("\n", "", line)
+        line = re.sub("(\s)+", ",", line)
+        line = re.sub("\n", ",", line)
+
+        # Ensure that there is a comma at the end of each line
+        if line[len(line) - 1] != ",":
+            line += ","
 
         text_lines += [line]
 
@@ -56,7 +74,6 @@ def download_dialogue(df, transcript_file_name, all_dialogue_file):
 def get_transcript_dialogue(transcript, abs_dialogue_path, all_dialogue_file):
     df = pd.read_table(transcript, header=None, sep="\n")
     df.columns = ['text']
-
     df['name'] = get_names(df)
     df['name'] = df['name'].ffill()
     df = df.dropna()
@@ -69,13 +86,10 @@ def get_transcript_dialogue(transcript, abs_dialogue_path, all_dialogue_file):
 
     print("Done")
 
-
 def main():
-    #transcript_root = 'C:\\Users\\angel\\Desktop\\doctor_who\\data\\doctor_who_transcripts'
-    #dialogue_root = 'C:\\Users\\angel\\Desktop\\doctor_who\\data\\doctor_who_dialogue'
 
-    transcript_root = 'C:\\Users\\angel\\GitHub\\doctor-who-transcripts\\data-raw\\doctor_who_transcripts'
-    dialogue_root = 'C:\\Users\\angel\\GitHub\\doctor-who-transcripts\\data\\doctor_who_dialogue'
+    transcript_root = 'C:\\Users\\angel\\GitHub\\doctor-who-dialogue-tracker\\data-raw\\doctor_who_transcripts'
+    dialogue_root = 'C:\\Users\\angel\\GitHub\\doctor-who-dialogue-tracker\\data\\doctor_who_dialogue'
 
     for folder in os.listdir(transcript_root):
         abs_dialogue_folder = dialogue_root + "\\" + folder

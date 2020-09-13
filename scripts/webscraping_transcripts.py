@@ -1,3 +1,9 @@
+"""
+This webscrapes the transcripts, as they are, from http://www.chakoteya.net/DoctorWho. This script does this for all
+of the transcripts available for Doctor Who and includes audiobook text.
+
+"""
+
 import requests, bs4, webbrowser, os, html2text, re, time, random
 import numpy as np
 from pathlib import Path
@@ -152,8 +158,8 @@ def webscrape_all_transcripts(pathlib_dir, os_dir):
 
 
 def main():
-    home_pathlib_dir = Path(r'C:\Users\angel\Desktop\doctor_who\data\doctor_who_transcripts')
-    home_os_dir = 'C:\\Users\\angel\\Desktop\\doctor_who\\data\\doctor_who_transcripts\\'
+    home_pathlib_dir = Path(r'C:\Users\angel\GitHub\doctor-who-dialogue-tracker\data-raw\doctor_who_transcripts')
+    home_os_dir = 'C:\\Users\\angel\\GitHub\\doctor-who-dialogue-tracker\\data-raw\\doctor_who_transcripts\\'
 
     webscrape_all_transcripts(home_pathlib_dir, home_os_dir)
 

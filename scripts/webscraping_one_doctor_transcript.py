@@ -19,7 +19,7 @@ def get_file_name(transcript_text, transcript_url, dir_name):
     return (Path(dir_name, file_name))
 
 def main():
-    dir_name = Path(r'C:\Users\angel\GitHub\doctor-who-transcripts\data-raw\doctor_who_transcripts\doctor_10')
+    dir_name = Path(r'C:\Users\angel\GitHub\doctor-who-dialogue-tracker\data-raw\doctor_who_transcripts\doctor_10')
 
     url = 'http://www.chakoteya.net/DoctorWho/episodes10.html'
     res = requests.get(url)
