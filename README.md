@@ -1,5 +1,6 @@
 # doctor-who-dialogue-tracker
 
+## Calculates which incarnation of the Doctor (Doctor Who) is most likley to have spoken the quote
 This webscrapes all of the doctors' dialogue in Doctor Who. Given a quote, this calculates which incarnation of the doctor is most likely and least likely to have spoken that quote. 
 
 Calculating the probabilities:
